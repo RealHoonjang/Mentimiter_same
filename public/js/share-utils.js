@@ -37,7 +37,10 @@ async function setupShare(code, options = {}) {
 
   if (urlInputId) {
     const input = document.getElementById(urlInputId);
-    if (input) input.value = joinUrl;
+    if (input) {
+      input.value = joinUrl;
+      input.title = joinUrl;
+    }
   }
 
   if (hintId) {

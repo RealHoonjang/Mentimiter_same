@@ -747,8 +747,9 @@ textarea {
 
 .url-copy-row input {
   flex: 1;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-family: 'Courier New', monospace;
+  min-width: 0;
 }
 
 .network-hint {
