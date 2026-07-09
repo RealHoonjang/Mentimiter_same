@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>발표 화면 - LivePoll</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="present-mode" id="presentApp">
+    <div id="loadingView" class="waiting-state" style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+      <div class="spinner"></div>
+      <h2>발표 화면 연결 중...</h2>
+      <p>호스트 페이지에서 이 창을 열어주세요.</p>
+    </div>
+
+    <div id="presentView" class="hidden" style="flex: 1;">
+      <div class="flex-between mb-2">
+        <span id="presentBadge" class="badge badge-waiting">대기 중</span>
+        <span class="participant-info">👥 <strong id="presentCount">0</strong>명 참가</span>
+      </div>
+
+      <h1 class="present-question" id="presentQuestion">질문이 여기에 표시됩니다</h1>
+
+      <div id="presentResults" style="flex: 1;"></div>
+
+      <div class="present-stats" id="presentStats"></div>
+    </div>
+
+    <div id="presentQrBox" class="present-qr-box hidden">
+      <canvas id="presentQrCanvas"></canvas>
+      <div class="present-qr-label">
+        <span class="present-qr-code" id="presentRoomCode"></span>
+        <span>QR로 참가하기</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/share-utils.js"></script>
+  <script src="/js/present.js"></script>
+</body>
+</html>

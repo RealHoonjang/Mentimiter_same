@@ -1,0 +1,18 @@
+{
+  "name": "mentimiter-same",
+  "version": "1.0.0",
+  "description": "실시간 설문조사 웹앱 (멘티미터 대체)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "socket.io": "^4.8.1",
+    "uuid": "^11.0.5"
+  }
+}

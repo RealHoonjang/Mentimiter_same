@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>설문 만들기 - LivePoll</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="container">
+    <a href="/" class="nav-back">← 홈으로</a>
+
+    <div class="flex-between mb-2">
+      <h1>설문 만들기</h1>
+      <div id="statusArea" class="hidden">
+        <span id="statusBadge" class="badge badge-waiting">대기 중</span>
+        <span class="participant-info" style="margin-left: 1rem;">
+          👥 참가자 <strong id="participantCount">0</strong>명
+        </span>
+      </div>
+    </div>
+
+    <!-- Setup phase -->
+    <div id="setupPhase">
+      <div class="host-grid">
+        <div class="card">
+          <h2>질문 설정</h2>
+
+          <div class="form-group">
+            <label for="questionInput">질문</label>
+            <textarea id="questionInput" placeholder="예: 오늘 강의에서 가장 인상 깊었던 내용은?"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>답변 유형</label>
+            <div class="type-selector">
+              <div class="type-option active" data-type="choice">
+                <div class="icon">📊</div>
+                <div class="title">객관식</div>
+                <div class="desc">선택지 중 하나를 고름</div>
+              </div>
+              <div class="type-option" data-type="text">
+                <div class="icon">💬</div>
+                <div class="title">주관식</div>
+                <div class="desc">자유롭게 답변 입력</div>
+              </div>
+            </div>
+          </div>
+
+          <div id="optionsSection">
+            <label>선택지</label>
+            <div class="options-list" id="optionsList">
+              <div class="option-item">
+                <input type="text" class="option-input" placeholder="선택지 1" value="">
+                <button class="btn-remove" onclick="removeOption(this)" title="삭제">×</button>
+              </div>
+              <div class="option-item">
+                <input type="text" class="option-input" placeholder="선택지 2" value="">
+                <button class="btn-remove" onclick="removeOption(this)" title="삭제">×</button>
+              </div>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="addOption()">+ 선택지 추가</button>
+          </div>
+
+          <div class="mt-2">
+            <button class="btn btn-primary" id="createBtn" onclick="createSession()">세션 생성하기</button>
+          </div>
+        </div>
+
+        <div class="card" id="previewCard" style="opacity: 0.5; pointer-events: none;">
+          <h2>미리보기</h2>
+          <p id="previewQuestion" style="font-size: 1.2rem; color: var(--text); margin-bottom: 1rem;">질문을 입력하세요</p>
+          <div id="previewContent">
+            <p>세션을 생성하면 참가 코드가 표시됩니다.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active phase -->
+    <div id="activePhase" class="hidden">
+      <div class="share-section card">
+        <div class="share-grid">
+          <div class="room-code-box" style="margin: 0;">
+            <p>참가 코드</p>
+            <div class="room-code" id="roomCode">------</div>
+          </div>
+
+          <div class="qr-box">
+            <canvas id="qrCanvas"></canvas>
+            <p class="qr-hint">QR 코드 스캔으로 바로 참가</p>
+          </div>
+
+          <div class="url-box">
+            <label for="joinUrlInput">참가 URL</label>
+            <div class="url-copy-row">
+              <input type="text" id="joinUrlInput" readonly>
+              <button class="btn btn-secondary btn-sm" onclick="copyJoinUrlHandler()">복사</button>
+            </div>
+            <p id="networkHint" class="network-hint hidden"></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="host-grid">
+        <div class="card">
+          <h2 id="activeQuestion">질문</h2>
+          <p id="activeType" class="mb-1"></p>
+
+          <div class="flex-between gap-1 mt-1">
+            <button class="btn btn-accent" id="startBtn" onclick="startPoll()">▶ 설문 시작</button>
+            <button class="btn btn-secondary hidden" id="stopBtn" onclick="stopPoll()">⏸ 설문 중지</button>
+            <button class="btn btn-danger btn-sm hidden" id="resetBtn" onclick="resetPoll()">초기화</button>
+            <a class="btn btn-secondary btn-sm" id="presentLink" href="#" target="_blank">🖥 발표 화면</a>
+          </div>
+
+          <div class="mt-2">
+            <button class="btn btn-secondary btn-sm" onclick="editQuestion()">질문 수정</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>실시간 결과</h2>
+          <div id="resultsArea">
+            <div class="waiting-state">
+              <p>설문을 시작하면 결과가 여기에 표시됩니다.</p>
+            </div>
+          </div>
+          <div class="present-stats" id="totalResponses"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/share-utils.js"></script>
+  <script src="/js/host.js"></script>
+</body>
+</html>

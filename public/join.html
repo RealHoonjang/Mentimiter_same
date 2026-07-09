@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>참가하기 - LivePoll</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="container">
+    <a href="/" class="nav-back">← 홈으로</a>
+
+    <!-- Join form -->
+    <div id="joinForm" class="join-card card">
+      <h1 class="text-center mb-1" style="font-size: 2rem;">참가하기</h1>
+      <p class="text-center mb-2">호스트가 알려준 6자리 코드를 입력하세요</p>
+
+      <div class="form-group">
+        <input type="text" id="codeInput" class="join-code-input" maxlength="6" placeholder="ABC123" autocomplete="off">
+      </div>
+
+      <button class="btn btn-primary" style="width: 100%;" onclick="joinSession()">입장하기</button>
+    </div>
+
+    <!-- Waiting -->
+    <div id="waitingView" class="join-card card hidden">
+      <div class="waiting-state">
+        <div class="spinner"></div>
+        <h2 id="waitingQuestion">질문 대기 중...</h2>
+        <p>호스트가 설문을 시작할 때까지 기다려주세요.</p>
+        <p class="mt-1 participant-info">세션 코드: <strong id="joinedCode"></strong></p>
+      </div>
+    </div>
+
+    <!-- Answer - Choice -->
+    <div id="choiceView" class="join-card card hidden">
+      <h2 id="choiceQuestion" class="mb-2"></h2>
+      <div class="choice-buttons" id="choiceButtons"></div>
+    </div>
+
+    <!-- Answer - Text -->
+    <div id="textView" class="join-card card hidden">
+      <h2 id="textQuestion" class="mb-2"></h2>
+      <div class="form-group">
+        <textarea id="textAnswer" placeholder="답변을 입력하세요..."></textarea>
+      </div>
+      <button class="btn btn-primary" style="width: 100%;" onclick="submitTextAnswer()">답변 제출</button>
+    </div>
+
+    <!-- Submitted -->
+    <div id="submittedView" class="join-card card hidden">
+      <div class="success-message">
+        <div class="check">✅</div>
+        <h2>답변이 제출되었습니다!</h2>
+        <p class="mt-1">호스트 화면에서 실시간으로 확인할 수 있습니다.</p>
+      </div>
+    </div>
+
+    <!-- Live results for participants (optional view during active poll) -->
+    <div id="liveResultsView" class="card hidden mt-2" style="max-width: 600px; margin: 2rem auto 0;">
+      <h3>실시간 결과</h3>
+      <div id="participantResults"></div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/join.js"></script>
+</body>
+</html>
