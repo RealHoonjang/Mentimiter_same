@@ -19,17 +19,21 @@ npm start
 2. 아래 명령으로 코드 업로드:
 
 ```bash
-git remote add origin https://github.com/YOUR_USERNAME/livepoll.git
+git remote add origin https://github.com/RealHoonjang/Mentimiter_same.git
 git branch -M main
 git push -u origin main
 ```
 
 ### 2. Render에 배포
 
+**원클릭 배포:** https://render.com/deploy?repo=https://github.com/RealHoonjang/Mentimiter_same
+
+또는 수동 설정:
+
 1. https://render.com 가입/로그인
 2. **New +** → **Web Service**
 3. **Build and deploy from a Git repository** → GitHub 연결
-4. 방금 만든 `livepoll` 저장소 선택
+4. `Mentimiter_same` 저장소 선택
 5. 설정:
    - **Name**: livepoll (원하는 이름)
    - **Runtime**: Node

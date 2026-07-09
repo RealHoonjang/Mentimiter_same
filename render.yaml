@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: livepoll
+    name: mentimiter-same
     runtime: node
     plan: starter
     buildCommand: npm install
