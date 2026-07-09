@@ -82,7 +82,26 @@ app.get('/api/host-info', (req, res) => {
   });
 });
 
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.get('/host', (req, res) => res.redirect('/host.html'));
+app.get('/join', (req, res) => res.redirect('/join.html'));
+
+app.use((req, res) => {
+  if (req.path.startsWith('/api/')) {
+    res.status(404).json({ error: 'Not found' });
+    return;
+  }
+  res.redirect('/');
+});
 
 io.on('connection', (socket) => {
   socket.on('create-session', (callback) => {
@@ -299,6 +318,6 @@ io.on('connection', (socket) => {
   });
 });
 
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`서버 실행 중: http://localhost:${PORT}`);
 });
