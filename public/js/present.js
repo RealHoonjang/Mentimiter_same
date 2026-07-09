@@ -20,7 +20,7 @@ if (!code) {
 
     document.getElementById('presentRoomCode').textContent = code;
     document.getElementById('presentQrBox').classList.remove('hidden');
-    setupShare(code, { canvasId: 'presentQrCanvas', qrSize: 120 });
+    setupShare(code, { qrImageId: 'presentQrImage', qrSize: 120 });
 
     if (res.isActive && res.results) {
       setActive(true);

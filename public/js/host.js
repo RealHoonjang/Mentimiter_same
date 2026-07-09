@@ -127,7 +127,7 @@ function showActivePhase(question) {
   document.getElementById('presentLink').href = `/present.html?code=${roomCode}`;
 
   setupShare(roomCode, {
-    canvasId: 'qrCanvas',
+    qrImageId: 'qrImage',
     urlInputId: 'joinUrlInput',
     hintId: 'networkHint',
   });

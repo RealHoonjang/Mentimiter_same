@@ -11,31 +11,27 @@ async function fetchHostInfo() {
   return cachedHostInfo;
 }
 
-function getShareBaseUrl(hostInfo) {
-  const { hostname, port, protocol } = window.location;
-  if (hostname === 'localhost' || hostname === '127.0.0.1') {
-    if (hostInfo?.ip) {
-      return `${protocol}//${hostInfo.ip}:${hostInfo.port || port || 3000}`;
-    }
-  }
-  return `${protocol}//${hostname}${port ? `:${port}` : ''}`;
-}
-
 function buildJoinUrl(code, hostInfo) {
-  return `${getShareBaseUrl(hostInfo)}/join.html?code=${encodeURIComponent(code)}`;
+  const { hostname, protocol, port } = window.location;
+  let base;
+
+  if ((hostname === 'localhost' || hostname === '127.0.0.1') && hostInfo?.ip) {
+    base = `${protocol}//${hostInfo.ip}:${hostInfo.port || port || 3000}`;
+  } else {
+    base = window.location.origin;
+  }
+
+  return `${base}/join.html?code=${encodeURIComponent(code)}`;
 }
 
-async function renderQrCode(canvas, url, size = 200) {
-  if (!canvas || typeof QRCode === 'undefined') return;
-  await QRCode.toCanvas(canvas, url, {
-    width: size,
-    margin: 2,
-    color: { dark: '#1a1230', light: '#ffffff' },
-  });
+function renderQrImage(imgElement, url, size = 200) {
+  if (!imgElement || !url) return;
+  imgElement.src = `/api/qr?size=${size}&url=${encodeURIComponent(url)}`;
+  imgElement.alt = '참가 QR 코드';
 }
 
 async function setupShare(code, options = {}) {
-  const { canvasId, urlInputId, hintId, qrSize = 200 } = options;
+  const { qrImageId, urlInputId, hintId, qrSize = 200 } = options;
   const hostInfo = await fetchHostInfo();
   const joinUrl = buildJoinUrl(code, hostInfo);
 
@@ -48,16 +44,15 @@ async function setupShare(code, options = {}) {
     const hint = document.getElementById(hintId);
     const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
     if (hint && isLocal && hostInfo.ip) {
-      hint.textContent = `같은 Wi-Fi 참가자는 이 URL 또는 QR 코드를 사용하세요.`;
+      hint.textContent = '같은 Wi-Fi 참가자는 이 URL 또는 QR 코드를 사용하세요.';
       hint.classList.remove('hidden');
     } else if (hint) {
       hint.classList.add('hidden');
     }
   }
 
-  if (canvasId) {
-    const canvas = document.getElementById(canvasId);
-    await renderQrCode(canvas, joinUrl, qrSize);
+  if (qrImageId) {
+    renderQrImage(document.getElementById(qrImageId), joinUrl, qrSize);
   }
 
   return joinUrl;

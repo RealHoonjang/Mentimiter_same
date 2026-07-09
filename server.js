@@ -1,6 +1,7 @@
 const express = require('express');
 const http = require('http');
 const os = require('os');
+const QRCode = require('qrcode');
 const { Server } = require('socket.io');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
@@ -84,6 +85,26 @@ app.get('/api/host-info', (req, res) => {
 
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
+});
+
+app.get('/api/qr', async (req, res) => {
+  try {
+    const url = req.query.url;
+    if (!url || typeof url !== 'string') {
+      res.status(400).json({ error: 'url required' });
+      return;
+    }
+
+    const size = Math.min(parseInt(req.query.size, 10) || 200, 500);
+    const buffer = await QRCode.toBuffer(url, {
+      width: size,
+      margin: 2,
+      errorCorrectionLevel: 'M',
+    });
+    res.type('png').send(buffer);
+  } catch {
+    res.status(500).json({ error: 'QR generation failed' });
+  }
 });
 
 app.use(express.static(path.join(__dirname, 'public')));

@@ -28,7 +28,7 @@
     </div>
 
     <div id="presentQrBox" class="present-qr-box hidden">
-      <canvas id="presentQrCanvas"></canvas>
+      <img id="presentQrImage" width="120" height="120" alt="참가 QR 코드">
       <div class="present-qr-label">
         <span class="present-qr-code" id="presentRoomCode"></span>
         <span>QR로 참가하기</span>
@@ -36,7 +36,6 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script src="/js/share-utils.js"></script>
   <script src="/js/present.js"></script>
