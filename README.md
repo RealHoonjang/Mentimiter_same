@@ -39,7 +39,7 @@ git push -u origin main
    - **Runtime**: Node
    - **Build Command**: `npm install`
    - **Start Command**: `npm start`
-   - **Plan**: 200명 강의용이면 **Starter ($7/월)** 권장 (무료 플랜은 슬립·성능 제한 있음)
+   - **Plan**: **Free** (강의 10분 전 미리 접속해 서버 깨우기)
 6. **Create Web Service** 클릭
 
 배포 완료 후 `https://livepoll-xxxx.onrender.com` URL이 생성됩니다.
