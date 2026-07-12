@@ -3,6 +3,7 @@ const socket = io();
 let selectedType = 'choice';
 let roomCode = null;
 let isPollActive = false;
+let latestResults = null;
 
 document.querySelectorAll('.type-option').forEach((el) => {
   el.addEventListener('click', () => {
@@ -191,9 +192,82 @@ function setPollActive(active) {
   document.getElementById('resetBtn').classList.toggle('hidden', !active);
 }
 
+function updateExportButton(results) {
+  const btn = document.getElementById('exportBtn');
+  if (!btn) return;
+  btn.disabled = !results || !results.total || results.total === 0;
+}
+
+function formatExportDate(date = new Date()) {
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${date.getFullYear()}${pad(date.getMonth() + 1)}${pad(date.getDate())}_${pad(date.getHours())}${pad(date.getMinutes())}`;
+}
+
+function formatAnswerTime(timestamp) {
+  if (!timestamp) return '';
+  const date = new Date(timestamp);
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+}
+
+function exportToExcel() {
+  if (!latestResults || !latestResults.total) {
+    showToast('저장할 응답이 없습니다.', 'error');
+    return;
+  }
+
+  if (typeof XLSX === 'undefined') {
+    showToast('엑셀 라이브러리를 불러오지 못했습니다. 새로고침 후 다시 시도해주세요.', 'error');
+    return;
+  }
+
+  const question = latestResults.question || document.getElementById('activeQuestion')?.textContent || '';
+  const typeLabel = latestResults.type === 'choice' ? '객관식' : '주관식';
+  const exportedAt = formatAnswerTime(Date.now());
+  const workbook = XLSX.utils.book_new();
+
+  const summaryRows = [
+    ['LivePoll 설문 결과'],
+    [],
+    ['세션 코드', roomCode || ''],
+    ['질문', question],
+    ['유형', typeLabel],
+    ['총 응답 수', latestResults.total],
+    ['내보낸 시각', exportedAt],
+  ];
+
+  if (latestResults.type === 'choice') {
+    summaryRows.push([]);
+    summaryRows.push(['선택지', '응답 수', '비율(%)']);
+    latestResults.options.forEach((opt) => {
+      summaryRows.push([opt.text, opt.count, opt.percentage]);
+    });
+  }
+
+  const summarySheet = XLSX.utils.aoa_to_sheet(summaryRows);
+  summarySheet['!cols'] = [{ wch: 18 }, { wch: 40 }, { wch: 12 }];
+  XLSX.utils.book_append_sheet(workbook, summarySheet, '요약');
+
+  if (latestResults.type === 'text') {
+    const answerRows = [['번호', '답변', '제출 시각']];
+    latestResults.answers.forEach((answer, index) => {
+      answerRows.push([index + 1, answer.text, formatAnswerTime(answer.timestamp)]);
+    });
+    const answerSheet = XLSX.utils.aoa_to_sheet(answerRows);
+    answerSheet['!cols'] = [{ wch: 8 }, { wch: 60 }, { wch: 20 }];
+    XLSX.utils.book_append_sheet(workbook, answerSheet, '답변 목록');
+  }
+
+  const filename = `LivePoll_${roomCode || '결과'}_${formatExportDate()}.xlsx`;
+  XLSX.writeFile(workbook, filename);
+  showToast('엑셀 파일이 저장되었습니다.');
+}
+
 function renderResults(results) {
   const area = document.getElementById('resultsArea');
   const stats = document.getElementById('totalResponses');
+  latestResults = results || null;
+  updateExportButton(latestResults);
 
   if (!results || results.total === 0) {
     if (!results?.isActive) {

@@ -108,6 +108,7 @@ app.get('/api/qr', async (req, res) => {
 });
 
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/lib', express.static(path.join(__dirname, 'node_modules', 'xlsx', 'dist')));
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -115,14 +116,6 @@ app.get('/', (req, res) => {
 
 app.get('/host', (req, res) => res.redirect('/host.html'));
 app.get('/join', (req, res) => res.redirect('/join.html'));
-
-app.use((req, res) => {
-  if (req.path.startsWith('/api/')) {
-    res.status(404).json({ error: 'Not found' });
-    return;
-  }
-  res.redirect('/');
-});
 
 io.on('connection', (socket) => {
   socket.on('create-session', (callback) => {
@@ -337,6 +330,14 @@ io.on('connection', (socket) => {
       io.to(code).emit('session-ended');
     }
   });
+});
+
+app.use((req, res) => {
+  if (req.path.startsWith('/api/') || req.path.startsWith('/lib/') || req.path.startsWith('/socket.io')) {
+    res.status(404).json({ error: 'Not found' });
+    return;
+  }
+  res.redirect('/');
 });
 
 server.listen(PORT, '0.0.0.0', () => {
