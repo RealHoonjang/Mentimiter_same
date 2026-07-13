@@ -108,7 +108,6 @@ app.get('/api/qr', async (req, res) => {
 });
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/lib', express.static(path.join(__dirname, 'node_modules', 'xlsx', 'dist')));
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -333,7 +332,7 @@ io.on('connection', (socket) => {
 });
 
 app.use((req, res) => {
-  if (req.path.startsWith('/api/') || req.path.startsWith('/lib/') || req.path.startsWith('/socket.io')) {
+  if (req.path.startsWith('/api/') || req.path.startsWith('/socket.io')) {
     res.status(404).json({ error: 'Not found' });
     return;
   }

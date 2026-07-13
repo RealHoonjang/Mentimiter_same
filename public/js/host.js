@@ -193,9 +193,11 @@ function setPollActive(active) {
 }
 
 function updateExportButton(results) {
-  const btn = document.getElementById('exportBtn');
-  if (!btn) return;
-  btn.disabled = !results || !results.total || results.total === 0;
+  const disabled = !results || !results.total || results.total === 0;
+  ['exportBtn', 'exportBtnBottom'].forEach((id) => {
+    const btn = document.getElementById(id);
+    if (btn) btn.disabled = disabled;
+  });
 }
 
 function formatExportDate(date = new Date()) {

@@ -120,10 +120,10 @@
         </div>
 
         <div class="card">
-          <div class="flex-between mb-1">
+          <div class="flex-between mb-1" style="align-items: flex-start; gap: 0.75rem;">
             <h2 style="margin-bottom: 0;">실시간 결과</h2>
-            <button class="btn btn-secondary btn-sm" id="exportBtn" onclick="exportToExcel()" disabled>
-              📥 엑셀 저장
+            <button type="button" class="btn btn-accent btn-sm" id="exportBtn" onclick="exportToExcel()" disabled>
+              엑셀 저장
             </button>
           </div>
           <div id="resultsArea">
@@ -132,13 +132,19 @@
             </div>
           </div>
           <div class="present-stats" id="totalResponses"></div>
+          <div class="mt-1">
+            <button type="button" class="btn btn-secondary" id="exportBtnBottom" onclick="exportToExcel()" disabled style="width: 100%;">
+              엑셀(.xlsx)로 결과 저장
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- deploy-marker: excel-export-v2 -->
   <script src="/socket.io/socket.io.js"></script>
-  <script src="/lib/xlsx.full.min.js"></script>
+  <script src="/vendor/xlsx.full.min.js"></script>
   <script src="/js/share-utils.js"></script>
   <script src="/js/host.js"></script>
 </body>

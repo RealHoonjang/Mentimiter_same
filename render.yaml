@@ -3,9 +3,13 @@ services:
     name: mentimiter-same
     runtime: node
     plan: free
+    region: oregon
     buildCommand: npm install
     startCommand: npm start
     healthCheckPath: /health
+    autoDeployTrigger: commit
     envVars:
       - key: NODE_ENV
         value: production
+      - key: APP_VERSION
+        value: excel-export-v2
